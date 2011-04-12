@@ -13,11 +13,13 @@
 import flash.system.Security;
 import flash.external.ExternalInterface;
 import flash.display.BitmapData;
+import BitmapWriter;
 import JPGEncoder;
 
 class JSCam {
 
 	private static var camera:Camera = null;
+	private static var display:MovieClip = null;	
 	private static var buffer:BitmapData = null;
 	private static var quality:Number = 85;
 	private static var interval = null;
@@ -77,10 +79,10 @@ class JSCam {
 			ExternalInterface.addCallback("setCamera", null, setCamera);
 			ExternalInterface.addCallback("getCameraList", null, getCameraList);
 
-			_root.attachMovie("clip", "video", 1);
-			_root.video.attachVideo(camera);
-			_root.video._x = 0;
-			_root.video._y = 0;
+			display = _root.attachMovie("clip", "video", 1);
+			display.video.attachVideo(camera);
+			display.video._x = 0;
+			display.video._y = 0;
 
 		} else {
 			ExternalInterface.call('webcam.debug', "error", "No camera was detected.");
@@ -123,7 +125,7 @@ class JSCam {
 		}
 
 		if (0 == time) {
-			buffer.draw(_root.video);
+			buffer.draw(display.video);
 			ExternalInterface.call('webcam.onCapture');
 			ExternalInterface.call('webcam.debug', "notify", "Capturing finished.");
 		} else {
@@ -133,7 +135,6 @@ class JSCam {
 	}
 
 	public static function getCameraList():Array {
-
 		var list = new Array();
 
 		for (var i = 0, l = Camera.names.length; i < l; i++) {
@@ -163,10 +164,10 @@ class JSCam {
 
 			if ("callback" == mode) {
 
-				for (var i = 0; i < 240; ++i) {
+				for (var i = 0; i < 640; ++i) {
 
 					var row = "";
-					for (var j=0; j < 320; ++j) {
+					for (var j=0; j < 480; ++j) {
 						row+= buffer.getPixel(j, i);
 						row+= ";";
 					}
@@ -213,17 +214,17 @@ class JSCam {
 
 	private static function _stream():Void {
 
-		buffer.draw(_root.video);
+		buffer.draw(display.video);
 
 		if (null != stream) {
 			clearInterval(stream);
 		}
 
 
-		for (var i = 0; i < 240; ++i) {
+		for (var i = 0; i < 640; ++i) {
 
 			var row = "";
-			for (var j=0; j < 320; ++j) {
+			for (var j=0; j < 480; ++j) {
 				row+= buffer.getPixel(j, i);
 				row+= ";";
 			}
