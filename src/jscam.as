@@ -58,30 +58,28 @@ class JSCam {
 			// http://www.adobe.com/support/flash/action_scripts/actionscript_dictionary/actionscript_dictionary133.html
 			camera.onStatus = function(info:Object) {
 
-			    switch (info.code) {
-			    case 'Camera.Muted':
-				ExternalInterface.call('webcam.debug', "notify", "Camera stopped");
-				break;
+		    switch (info.code) {
+		    	case 'Camera.Muted':
+						ExternalInterface.call('webcam.debug', "notify", "Camera stopped");
+						break;
 			    case 'Camera.Unmuted' :
-				ExternalInterface.call('webcam.debug', "notify", "Camera started");
-				break;
-			    }
+						ExternalInterface.call('webcam.debug', "notify", "Camera started");
+						break;
+		    }
 			}
 
 			camera.setQuality(0, 100);
 			camera.setMode(Stage.width, Stage.height, 24, false);
 
 			ExternalInterface.addCallback("capture", null, capture);
-
 			ExternalInterface.addCallback("save", null, save);
-
 			ExternalInterface.addCallback("setCamera", null, setCamera);
 			ExternalInterface.addCallback("getCameraList", null, getCameraList);
 
 			display = _root.attachMovie("clip", "video", 1);
-			display.video.attachVideo(camera);
 			display.video._x = 0;
 			display.video._y = 0;
+			display.video.attachVideo(camera);			
 
 		} else {
 			ExternalInterface.call('webcam.debug', "error", "No camera was detected.");
