@@ -13,7 +13,6 @@
 import flash.system.Security;
 import flash.external.ExternalInterface;
 import flash.display.BitmapData;
-import BitmapWriter;
 import JPGEncoder;
 
 class JSCam {
